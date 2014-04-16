@@ -97,7 +97,6 @@ function (HTML5Video, Resizer) {
             if (!state.isFlashMode()) {
                 state.videoPlayer.setPlaybackRate(state.speed);
             }
-            state.videoPlayer.player.setVolume(state.currentVolume);
         });
 
         if (state.isYoutubeType()) {
@@ -564,6 +563,10 @@ function (HTML5Video, Resizer) {
             _this.videoPlayer.onSpeedChange(speed);
         });
 
+        this.el.on('volumechange volumechange:silent', function (event, volume) {
+            _this.videoPlayer.onVolumeChange(volume);
+        });
+
         this.videoPlayer.log('load_video');
 
         availablePlaybackRates = this.videoPlayer.player
@@ -954,7 +957,6 @@ function (HTML5Video, Resizer) {
 
     function onVolumeChange(volume) {
         this.videoPlayer.player.setVolume(volume);
-        this.el.trigger('volumechange', arguments);
     }
 });
 
