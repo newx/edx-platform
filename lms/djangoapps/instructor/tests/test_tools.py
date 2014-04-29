@@ -124,13 +124,13 @@ class TestGetUnitsWithDueDate(ModuleStoreTestCase):
         course = CourseFactory.create()
         week1 = ItemFactory.create(due=due)
         week2 = ItemFactory.create(due=due)
-        course.children = [week1.location.url(), week2.location.url()]
+        course.children = [week1.location, week2.location]
 
         homework = ItemFactory.create(
             parent_location=week1.location,
             due=due
         )
-        week1.children = [homework.location.url()]
+        week1.children = [homework.location]
 
         self.course = course
         self.week1 = week1
@@ -174,13 +174,13 @@ class TestSetDueDateExtension(ModuleStoreTestCase):
         course = CourseFactory.create()
         week1 = ItemFactory.create(due=due)
         week2 = ItemFactory.create(due=due)
-        course.children = [week1.location.url(), week2.location.url()]
+        course.children = [week1.location, week2.location]
 
         homework = ItemFactory.create(
             parent_location=week1.location,
             due=due
         )
-        week1.children = [homework.location.url()]
+        week1.children = [homework.location]
 
         user = UserFactory.create()
         StudentModule(
@@ -230,14 +230,14 @@ class TestDataDumps(ModuleStoreTestCase):
         week1 = ItemFactory.create(due=due)
         week2 = ItemFactory.create(due=due)
         week3 = ItemFactory.create(due=due)
-        course.children = [week1.location.url(), week2.location.url(),
-                           week3.location.url()]
+        course.children = [week1.location, week2.location,
+                           week3.location]
 
         homework = ItemFactory.create(
             parent_location=week1.location,
             due=due
         )
-        week1.children = [homework.location.url()]
+        week1.children = [homework.location]
 
         user1 = UserFactory.create()
         StudentModule(
