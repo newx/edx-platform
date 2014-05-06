@@ -64,8 +64,20 @@ class Command(BaseCommand):
             active_students = User.objects.filter(
                 courseenrollment__course_id=course_id,
                 courseenrollment__is_active=True)
+            enrolled_students = User.objects.filter(
+                courseenrollment__course_id=course_id)
+            total_verified = GeneratedCertificate.objects.filter(
+                course_id__exact=course_id, mode__exact='verified')
+            total_honor = GeneratedCertificate.objects.filter(
+                course_id__exact=course_id, mode__exact='honor')
+            total_audit = GeneratedCertificate.objects.filter(
+                course_id__exact=course_id, mode__exact='audit')
 
-            cert_data[course_id] = {'active': active_students.count()}
+            cert_data[course_id] = {'active': active_students.count(),
+                                    'enrolled': enrolled_students.count(),
+                                    'total_verified': total_verified.count(),
+                                    'total_honor': total_honor.count(),
+                                    'total_audit': total_audit.count()}
 
             status_tally = GeneratedCertificate.objects.filter(
                 course_id__exact=course_id).values('status').annotate(
@@ -88,16 +100,16 @@ class Command(BaseCommand):
                 for status in cert_data[course]])
 
         # print the heading for the report
-        print "{:>20}".format("course ID"),
-        print ' '.join(["{:>12}".format(heading)
+        print "{:>26}".format("course ID"),
+        print ' '.join(["{:>14}".format(heading)
                         for heading in status_headings])
 
         # print the report
         for course_id in cert_data:
-            print "{0:>20}".format(course_id[0:18]),
+            print "{0:>26}".format(course_id[0:24]),
             for heading in status_headings:
                 if heading in cert_data[course_id]:
-                    print "{:>12}".format(cert_data[course_id][heading]),
+                    print "{:>14}".format(cert_data[course_id][heading]),
                 else:
-                    print " " * 12,
+                    print " " * 14,
             print
