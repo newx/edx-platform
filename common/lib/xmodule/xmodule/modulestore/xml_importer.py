@@ -176,7 +176,7 @@ def import_from_xml(
                 if module.scope_ids.block_type == 'course':
                     course_data_path = path(data_dir) / module.data_dir
                     course_location = module.location
-                    course_prefix = u'{0.org}/{0.course}'.format(course_location)
+                    course_prefix = u'{0.org}/{0.course}/'.format(course_location)
 
                     # Check to see if a course with the same
                     # pseudo_course_id, but different run exists in
