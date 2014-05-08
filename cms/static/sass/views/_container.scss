@@ -230,6 +230,16 @@ body.view-container .content-primary {
       }
     }
   }
+
+  // add a new component menu override - most styles currently live in _unit.scss
+  .new-component-item {
+    margin: ($baseline/2);
+    border-top: 0;
+    border-radius: ($baseline/4);
+    box-shadow: 0 1px 3px $shadow-l1 inset;
+
+
+  }
 }
 
 // ====================

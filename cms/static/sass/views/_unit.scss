@@ -1184,30 +1184,29 @@ body.view-container {
 
   // New Components
   .new-component-item {
-    margin: $baseline 0px;
-    border-top: 1px solid $mediumGrey;
-    box-shadow: 0 2px 1px rgba(182, 182, 182, 0.75) inset;
+    margin: $baseline 0 0 0;
+    border-top: 1px solid $gray-l3;
+    box-shadow: 0 2px 1px $shadow-l1 inset;
     background-color: $lightGrey;
-    margin-bottom: 0px;
-    padding-bottom: $baseline;
+    padding: $baseline;
 
     .new-component-button {
       display: block;
       padding: $baseline;
       text-align: center;
-      color: #edf1f5;
+      color: $green;
     }
 
     h5 {
-      margin: $baseline 0px;
-      color: #fff;
+      @extend %t-title5;
+      margin: 0 0 $baseline 0;
+      color: $white;
       font-weight: 600;
-      font-size: 18px;
     }
 
     .rendered-component {
       display: none;
-      background: #fff;
+      background: $white;
       border-radius: 3px 3px 0 0;
     }
 
@@ -1219,42 +1218,37 @@ body.view-container {
       }
 
       a {
-        border: 1px solid $mediumGrey;
-        width: 100px;
-        height: 100px;
-        color: #fff;
-        margin-right: 15px;
+        @extend %t-action3;
+        width: ($baseline*5);
+        height: ($baseline*5);
+        margin-right: ($baseline*.75);
         margin-bottom: $baseline;
-        border-radius: 8px;
-        font-size: 15px;
-        line-height: 14px;
+        border: 1px solid $mediumGrey;
+        border-radius: ($baseline/4);
+        box-shadow: 0 1px 1px $shadow, 0 1px 0 rgba(255, 255, 255, .4) inset;
         text-align: center;
-        box-shadow: 0 1px 1px rgba(0, 0, 0, .2), 0 1px 0 rgba(255, 255, 255, .4) inset;
+        color: $white;
 
         .name {
-          position: absolute;
-          bottom: 5px;
-          left: 0;
-          width: 100%;
-          padding: $baseline/2;
           @include box-sizing(border-box);
-          color: #fff;
+          display: block;
+          color: $white;
         }
       }
     }
 
     .new-component-templates {
+      @include clearfix;
       display: none;
-      margin: $baseline 2*$baseline;
+      margin: $baseline ($baseline*2);
       border-radius: 3px;
       border: 1px solid $mediumGrey;
-      background-color: #fff;
-      box-shadow: 0 1px 1px rgba(0, 0, 0, .2), 0 1px 0 rgba(255, 255, 255, .4) inset;
-      @include clearfix;
+      background-color: $white;
+      box-shadow: 0 1px 1px $shadow, 0 1px 0 rgba(255, 255, 255, .4) inset;
 
       .cancel-button {
-        margin: $baseline 0px $baseline/2 $baseline/2;
         @include white-button;
+        margin: $baseline 0 ($baseline/2) ($baseline/2);
       }
 
       .problem-type-tabs {
@@ -1263,7 +1257,7 @@ body.view-container {
 
       // specific menu types
       &.new-component-problem {
-        padding-bottom: $baseline/2;
+        padding-bottom: ($baseline/2);
 
         [class^="icon-"], .editor-indicator {
           display: inline-block;
@@ -1281,37 +1275,37 @@ body.view-container {
 
       a {
         position: relative;
-        border: 1px solid $darkGreen;
-        background: tint($green,20%);
-        color: #fff;
+        border: 1px solid $green-d2;
+        background-color: $green-l1;
+        color: $white;
 
         &:hover {
-          background: $brightGreen;
+          background: $green-s1;
         }
       }
     }
 
     .problem-type-tabs {
-      list-style-type: none;
-      border-radius: 0;
-      width: 100%;
       @include linear-gradient(top, rgba(255, 255, 255, .4), rgba(255, 255, 255, 0));
+      list-style-type: none;
+      width: 100%;
+      border-radius: 0;
       background-color: $lightBluishGrey;
-      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 -1px 0 rgba(0, 0, 0, 0.2) inset;
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 -1px 0 $shadow inset;
 
       li:first-child {
         margin-left: $baseline;
       }
 
       li {
-        float:left;
-        display:inline-block;
-        text-align:center;
-        width: auto;
         @include linear-gradient(top, rgba(255, 255, 255, .4), rgba(255, 255, 255, 0));
-        background-color: tint($lightBluishGrey, 10%);
-        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 -1px 0 rgba(0, 0, 0, 0.2) inset;
         opacity: 0.8;
+        float: left;
+        display: inline-block;
+        width: auto;
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 -1px 0 $shadow inset;
+        background-color: tint($lightBluishGrey, 10%);
+        text-align: center;
 
         &:hover {
           opacity: 0.9;
@@ -1319,19 +1313,18 @@ body.view-container {
         }
 
         &.ui-state-active {
-          border: 0px;
           @include active;
+          border: 0px;
           opacity: 1.0;
         }
       }
 
       a {
+        @extend %t-action3;
         display: block;
-        padding: 15px 25px;
-        font-size: 15px;
-        line-height: 16px;
+        padding: ($baseline*.75) ($baseline*1.25);
         text-align: center;
-        color: #3c3c3c;
+        color: $gray-d3;
         text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
       }
     }
@@ -1340,33 +1333,29 @@ body.view-container {
 
       a {
         @include transition(none);
-        background: #fff;
         border: 0px;
-        color: #3c3c3c;
+        background: $white;
+        color: $gray-d3;
 
         &:hover {
           @include transition(background-color $tmg-f2 linear 0s);
           background: tint($green,30%);
-          color: #fff;
+          color: $white;
         }
       }
 
       li {
         border:none;
         border-bottom: 1px dashed $lightGrey;
-        color: #fff;
+        color: $white;
       }
 
-      li:first-child {
-        a {
-          border-top: 0px;
-        }
+      li:first-child a {
+        border-top: 0;
       }
 
-      li:nth-child(2) {
-        a {
-          border-radius: 0px;
-        }
+      li:nth-child(2) a {
+        border-radius: 0;
       }
 
       a {
@@ -1392,11 +1381,11 @@ body.view-container {
         }
 
         .editor-indicator {
+          @extend %t-copy-sub2;
           @include transition(opacity $tmg-f2 linear 0s);
           float: right;
           position: relative;
           top: 3px;
-          font-size: 12px;
           opacity: 0.3;
         }
 
@@ -1405,7 +1394,7 @@ body.view-container {
         }
 
         &:hover {
-          color: #fff;
+          color: $white;
 
           [class^="icon-"] {
             opacity: 1.0;
@@ -1421,15 +1410,16 @@ body.view-container {
       .empty {
 
         a {
+
+          background: $white;
           line-height: 1.4;
           font-weight: 400;
-          background: #fff;
-          color: #3c3c3c;
+          color: $gray-d3;
 
 
           &:hover {
             background: tint($green,30%);
-            color: #fff;
+            color: $white;
           }
         }
       }
