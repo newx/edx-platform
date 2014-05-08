@@ -101,10 +101,10 @@ define ["jquery", "jquery.ui", "gettext", "backbone",
             $component = $(event.currentTarget).parents('.component')
             source_locator = $component.data('locator')
             @runOperationShowingMessage(gettext('Duplicating&hellip;'), ->
-                self.createComponent(
+                operation = self.createComponent(
                     {duplicate_source_locator: source_locator},
-                    "Duplicating " + source_locator
-                ).done(
+                    "Duplicating " + source_locator);
+                operation.done(
                     (editor) ->
                         originalOffset = @getScrollOffset($component)
                         $component.after(editor.$el)

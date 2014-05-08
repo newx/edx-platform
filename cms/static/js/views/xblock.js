@@ -156,21 +156,22 @@ define(["jquery", "underscore", "js/views/baseview", "xblock/runtime.v1"],
 
             /**
              * Creates a new child xblock instance based upon the supplied xblock info.
-             * @param template The information about the desired template.
-             * @param parent_locator
-             * @returns {*} A promise representing the creation of the new xblock.
+             * @param templateInfo The information about the desired template.
+             * @param parent_locator The locator for the xblock to parent into.
+             * @returns {*} A promise representing the creation of the new xblock. The
+             * newly created child locator will be passed to any promise callbacks.
              */
-            create: function(template, parent_locator) {
+            create: function(templateInfo, parent_locator) {
                 var self = this,
                     operation = $.Deferred();
-                template.parent_locator = parent_locator;
-                $.postJSON(this.model.urlRoot, template,
+                templateInfo.parent_locator = parent_locator;
+                $.postJSON(this.model.urlRoot, templateInfo,
                     function(data) {
                         var childLocator = data.locator,
                             xblockInfo = self.model;
                         xblockInfo.set('id', childLocator);
                         self.$el.data('locator', childLocator);
-                        operation.resolve();
+                        operation.resolveWith(self, [childLocator]);
                     });
                 return operation.promise();
             }

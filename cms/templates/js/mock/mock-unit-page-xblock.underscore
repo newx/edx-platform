@@ -21,8 +21,7 @@
         </li>
     </ul>
 </div>
-<div class="xblock xblock-student_view xmodule_display xmodule_HtmlModule xblock-initialized"
-     data-runtime-class="PreviewRuntime" data-init="XBlockToXModuleShim" data-runtime-version="1"
-     data-usage-id="i4x:;mockID" data-type="HTMLModule" data-block-type="html">
+<div class="xblock xblock-student_view" data-runtime-version="1" data-usage-id="i4x:;_;_edX;_mock"
+     data-init="MockXBlock" data-runtime-class="StudioRuntime" data-block-type="mock" tabindex="0">
     <h2>Mock Component</h2>
 </div>
