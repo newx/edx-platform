@@ -1190,6 +1190,14 @@ body.view-container {
     background-color: $lightGrey;
     padding: $baseline;
 
+    .new-component {
+      text-align: center;
+
+      h5 {
+        color: $darkGreen;
+      }
+    }
+
     .new-component-button {
       display: block;
       padding: $baseline;
@@ -1422,14 +1430,6 @@ body.view-container {
             color: $white;
           }
         }
-      }
-    }
-
-    .new-component {
-      text-align: center;
-
-      h5 {
-        color: $darkGreen;
       }
     }
   }

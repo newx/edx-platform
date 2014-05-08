@@ -233,12 +233,20 @@ body.view-container .content-primary {
 
   // add a new component menu override - most styles currently live in _unit.scss
   .new-component-item {
-    margin: ($baseline/2);
-    border-top: 0;
+    margin: $baseline;
+    border: 1px solid $gray-l3;
     border-radius: ($baseline/4);
-    box-shadow: 0 1px 3px $shadow-l1 inset;
+    box-shadow: 0 1px 3px $shadow inset;
+    background-color: $gray-l5;
+    padding: ($baseline/2);
 
+    h5 {
+      margin-bottom: ($baseline*.75);
+    }
 
+    .new-component-type a {
+      margin-bottom: ($baseline/2);
+    }
   }
 }
 
