@@ -7,7 +7,7 @@ define(["jquery", "underscore", "js/spec_helpers/create_sinon", "js/spec_helpers
     function($, _, create_sinon, modal_helpers, EditXBlockModal, ComponentTemplates) {
 
         var installMockXBlock, uninstallMockXBlock, installMockXModule, uninstallMockXModule,
-            mockComponentTemplates, installEditTemplates, showEditModal;
+            mockComponentTemplates, installEditTemplates, showEditModal, verifyXBlockRequest;
 
         installMockXBlock = function() {
             window.MockXBlock = function(runtime, element) {
@@ -33,17 +33,39 @@ define(["jquery", "underscore", "js/spec_helpers/create_sinon", "js/spec_helpers
             window.MockDescriptor = null;
         };
 
-        mockComponentTemplates = new ComponentTemplates([{
-            templates: [{
-                display_name: 'Discussion',
-                category: 'discussion'
+        mockComponentTemplates = new ComponentTemplates([
+            {
+                templates: [
+                    {
+                        category: 'discussion',
+                        display_name: 'Discussion'
+                    }],
+                type: 'discussion'
+            }, {
+                "templates": [
+                    {
+                        "category": "html",
+                        "boilerplate_name": null,
+                        "display_name": "Text"
+                    }, {
+                        "category": "html",
+                        "boilerplate_name": "announcement.yaml",
+                        "display_name": "Announcement"
+                    }],
+                "type": "html"
             }],
-            type: 'discussion'
-        }], {parse: true});
-
+            {
+                parse: true
+            });
 
         installEditTemplates = function(append) {
             modal_helpers.installModalTemplates(append);
+
+            // Add templates needed by the add XBlock menu
+            modal_helpers.installTemplate('add-xblock-component');
+            modal_helpers.installTemplate('add-xblock-component-button');
+            modal_helpers.installTemplate('add-xblock-component-menu');
+            modal_helpers.installTemplate('add-xblock-component-menu-problem');
 
             // Add templates needed by the edit XBlock modal
             modal_helpers.installTemplate('edit-xblock-modal');
@@ -65,6 +87,15 @@ define(["jquery", "underscore", "js/spec_helpers/create_sinon", "js/spec_helpers
             return modal;
         };
 
+        verifyXBlockRequest = function (requests, json) {
+            var request = requests[requests.length - 1];
+            expect(request.url).toEqual("/xblock");
+            expect(request.method).toEqual("POST");
+            // There was a problem with order of returned parameters in strings.
+            // Changed to compare objects instead strings.
+            expect(JSON.parse(request.requestBody)).toEqual(JSON.parse(json));
+        };
+
         return $.extend(modal_helpers, {
             'installMockXBlock': installMockXBlock,
             'uninstallMockXBlock': uninstallMockXBlock,
@@ -72,6 +103,7 @@ define(["jquery", "underscore", "js/spec_helpers/create_sinon", "js/spec_helpers
             'uninstallMockXModule': uninstallMockXModule,
             'mockComponentTemplates': mockComponentTemplates,
             'installEditTemplates': installEditTemplates,
-            'showEditModal': showEditModal
+            'showEditModal': showEditModal,
+            'verifyXBlockRequest': verifyXBlockRequest
         });
     });

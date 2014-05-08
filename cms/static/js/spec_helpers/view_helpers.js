@@ -1,9 +1,10 @@
 /**
  * Provides helper methods for invoking Studio modal windows in Jasmine tests.
  */
-define(["jquery"],
-    function($) {
-        var installTemplate, installViewTemplates, getNotificationMessage;
+define(["jquery", "js/views/feedback_notification", "js/spec_helpers/create_sinon"],
+    function($, NotificationView, create_sinon) {
+        var installTemplate, installViewTemplates, createNotificationSpy, verifyNotificationShown,
+            verifyNotificationHidden;
 
         installTemplate = function(templateName, isFirst) {
             var template = readFixtures(templateName + '.underscore'),
@@ -20,17 +21,29 @@ define(["jquery"],
             appendSetFixtures('<div id="page-notification"></div>');
         };
 
-        getNotificationMessage = function() {
-            var notificationPanel = $('.wrapper-notification');
-            if (notificationPanel.length === 0 || notificationPanel.hasClass('is-hiding')) {
-                return null;
-            }
-            return notificationPanel.find('h2').text();
+        createNotificationSpy = function() {
+            var notificationSpy = spyOnConstructor(NotificationView, "Mini", ["show", "hide"]);
+            notificationSpy.show.andReturn(notificationSpy);
+            return notificationSpy;
+        };
+
+        verifyNotificationShown = function(notificationSpy, text) {
+            expect(notificationSpy.constructor).toHaveBeenCalled();
+            expect(notificationSpy.show).toHaveBeenCalled();
+            expect(notificationSpy.hide).not.toHaveBeenCalled();
+            var options = notificationSpy.constructor.mostRecentCall.args[0];
+            expect(options.title).toMatch(text);
+        };
+
+        verifyNotificationHidden = function(notificationSpy) {
+            expect(notificationSpy.hide).toHaveBeenCalled();
         };
 
         return {
             'installTemplate': installTemplate,
             'installViewTemplates': installViewTemplates,
-            'getNotificationMessage': getNotificationMessage
+            'createNotificationSpy': createNotificationSpy,
+            'verifyNotificationShown': verifyNotificationShown,
+            'verifyNotificationHidden': verifyNotificationHidden
         };
     });

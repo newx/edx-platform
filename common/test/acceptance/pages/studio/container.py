@@ -70,7 +70,7 @@ class ContainerPage(PageObject):
         draggables = self.q(css='.drag-handle')
         source = draggables[source_index]
         action = ActionChains(self.browser)
-        action.click_and_hold(source).move_by_offset(0, -source.size['height']/2).release().perform()
+        action.click_and_hold(source).move_by_offset(0, -source.size['height'] / 2).release().perform()
 
 
 class XBlockWrapper(PageObject):

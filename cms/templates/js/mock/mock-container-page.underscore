@@ -4,7 +4,6 @@
         <header class="mast has-actions has-navigation">
             <h1 class="page-header">
                 <small class="navigation navigation-parents">
-
                     <a href="/unit/TestCourse/branch/draft/block/vertical8eb" class="navigation-link navigation-parent">Unit 1</a>
                     <a href="#" class="navigation-link navigation-current">Nested Vertical Test</a>
                 </small>
