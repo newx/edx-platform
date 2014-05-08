@@ -1,12 +1,13 @@
-define(["jquery", "jasmine", "coffee/src/views/unit", "js/models/module_info", "js/views/feedback_notification",
-    "js/collections/component_template", "js/spec_helpers/create_sinon", "js/spec_helpers/edit_helpers",
+define(["jquery", "underscore", "jasmine", "coffee/src/views/unit", "js/models/module_info",
+    "js/views/feedback_notification", "js/spec_helpers/create_sinon", "js/spec_helpers/edit_helpers",
     "jasmine-stealth"],
-    function ($, jasmine, UnitEditView, ModuleModel, NotificationView, ComponentTemplates,
-              create_sinon, edit_helpers) {
-        var requests, unitView, initialize, respondWithHtml, verifyJSON, verifyComponents, i;
+    function ($, _, jasmine, UnitEditView, ModuleModel, NotificationView, create_sinon, edit_helpers) {
+        var requests, unitView, initialize, respondWithHtml, verifyJSON, verifyComponents, verifyNotification, i;
 
-        respondWithHtml = function(html) {
-            var requestIndex = requests.length - 1;
+        respondWithHtml = function(html, requestIndex) {
+            if (_.isUndefined(requestIndex)) {
+                requestIndex = requests.length - 1;
+            }
             create_sinon.respondWithJson(
                 requests,
                 { html: html, "resources": [] },
@@ -19,9 +20,7 @@ define(["jquery", "jasmine", "coffee/src/views/unit", "js/models/module_info", "
                 templates,
                 model;
             requests = create_sinon.requests(test);
-            templates = new ComponentTemplates({
-                templates: [[["Discussion", "discussion", false, null]]]
-            }, {parse: true});
+            templates = edit_helpers.mockComponentTemplates;
             model = new ModuleModel({
                 id: 'unit_locator',
                 state: 'draft'
@@ -29,12 +28,11 @@ define(["jquery", "jasmine", "coffee/src/views/unit", "js/models/module_info", "
             unitView = new UnitEditView({
                 el: $('.main-wrapper'),
                 templates: templates,
-                model: model,
-                notificationMinShown: 0
+                model: model
             });
             // Respond with renderings for the two xblocks in the unit
-            respondWithHtml(mockXBlockHtml);
-            respondWithHtml(mockXBlockHtml);
+            respondWithHtml(mockXBlockHtml, 0);
+            respondWithHtml(mockXBlockHtml, 1);
         };
 
         verifyJSON = function (requests, json) {
@@ -52,6 +50,16 @@ define(["jquery", "jasmine", "coffee/src/views/unit", "js/models/module_info", "
             for (i = 0; i < locators.length; i++) {
                 expect($(components[i]).data('locator')).toBe(locators[i]);
             }
+        };
+
+        verifyNotification = function (notificationSpy, text, requests) {
+            expect(notificationSpy.constructor).toHaveBeenCalled();
+            expect(notificationSpy.show).toHaveBeenCalled();
+            expect(notificationSpy.hide).not.toHaveBeenCalled();
+            var options = notificationSpy.constructor.mostRecentCall.args[0];
+            expect(options.title).toMatch(text);
+            create_sinon.respondWithJson(requests, {"locator": "new_item"});
+            expect(notificationSpy.hide).toHaveBeenCalled();
         };
 
         beforeEach(function() {
@@ -105,11 +113,11 @@ define(["jquery", "jasmine", "coffee/src/views/unit", "js/models/module_info", "
                 });
 
                 it('shows a notification while duplicating', function () {
+                    var notificationSpy = spyOnConstructor(NotificationView, "Mini", ["show", "hide"]);
+                    notificationSpy.show.andReturn(notificationSpy);
                     initialize(this);
                     clickDuplicate(0);
-                    expect(edit_helpers.getNotificationMessage()).toBe('Duplicating\u2026');
-                    create_sinon.respondWithJson(requests, {"locator": "duplicated_item"});
-                    expect(edit_helpers.getNotificationMessage()).toBeNull();
+                    verifyNotification(notificationSpy, /Duplicating/, requests);
                 });
 
                 it('does not insert duplicated component upon failure', function () {
@@ -141,11 +149,11 @@ define(["jquery", "jasmine", "coffee/src/views/unit", "js/models/module_info", "
                 });
 
                 it('shows a notification while creating', function () {
+                    var notificationSpy = spyOnConstructor(NotificationView, "Mini", ["show", "hide"]);
+                    notificationSpy.show.andReturn(notificationSpy);
                     initialize(this);
                     clickNewComponent();
-                    expect(edit_helpers.getNotificationMessage()).toBe('Adding\u2026');
-                    create_sinon.respondWithJson(requests, {"locator": "new_item"});
-                    expect(edit_helpers.getNotificationMessage()).toBeNull();
+                    verifyNotification(notificationSpy, /Adding/, requests);
                 });
 
                 it('does not insert duplicated component upon failure', function () {
@@ -171,29 +179,13 @@ define(["jquery", "jasmine", "coffee/src/views/unit", "js/models/module_info", "
 
                 function test_link_disabled_during_ajax_call(draft_state) {
                     it("re-enables the " + draft_state.selector + " link once the ajax call returns", function() {
-                        initialize();
-                        runs(function() {
-                            spyOn($, "ajax").andCallThrough();
-                            spyOn($.fn, 'addClass').andCallThrough();
-                            spyOn($.fn, 'removeClass').andCallThrough();
-                            link = $(draft_state.selector);
-                            link.click();
-                        });
-                        waitsFor(function() {
-                            // wait for "is-disabled" to be removed as a class
-                            return !($(draft_state.selector).hasClass("is-disabled"));
-                        }, 500);
-                        runs(function() {
-                            // check that the `is-disabled` class was added and removed
-                            expect($.fn.addClass).toHaveBeenCalledWith("is-disabled");
-                            expect($.fn.removeClass).toHaveBeenCalledWith("is-disabled");
-
-                            // make sure the link finishes without the `is-disabled` class
-                            expect(link).not.toHaveClass("is-disabled");
-
-                            // affirm that ajax was called
-                            expect($.ajax).toHaveBeenCalled();
-                        });
+                        initialize(this);
+                        link = $(draft_state.selector);
+                        expect(link).not.toHaveClass('is-disabled');
+                        link.click();
+                        expect(link).toHaveClass('is-disabled');
+                        create_sinon.respondWithError(requests);
+                        expect(link).not.toHaveClass('is-disabled');
                     });
                 }
 

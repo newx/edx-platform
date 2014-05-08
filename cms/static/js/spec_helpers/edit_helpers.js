@@ -2,11 +2,12 @@
  * Provides helper methods for invoking Studio editors in Jasmine tests.
  */
 define(["jquery", "underscore", "js/spec_helpers/create_sinon", "js/spec_helpers/modal_helpers",
-    "js/views/modals/edit_xblock", "xmodule", "coffee/src/main", "xblock/cms.runtime.v1"],
-    function($, _, create_sinon, modal_helpers, EditXBlockModal) {
+    "js/views/modals/edit_xblock", "js/collections/component_template",
+    "xmodule", "coffee/src/main", "xblock/cms.runtime.v1"],
+    function($, _, create_sinon, modal_helpers, EditXBlockModal, ComponentTemplates) {
 
         var installMockXBlock, uninstallMockXBlock, installMockXModule, uninstallMockXModule,
-            installEditTemplates, showEditModal;
+            mockComponentTemplates, installEditTemplates, showEditModal;
 
         installMockXBlock = function() {
             window.MockXBlock = function(runtime, element) {
@@ -31,6 +32,15 @@ define(["jquery", "underscore", "js/spec_helpers/create_sinon", "js/spec_helpers
         uninstallMockXModule = function() {
             window.MockDescriptor = null;
         };
+
+        mockComponentTemplates = new ComponentTemplates([{
+            templates: [{
+                display_name: 'Discussion',
+                category: 'discussion'
+            }],
+            type: 'discussion'
+        }], {parse: true});
+
 
         installEditTemplates = function(append) {
             modal_helpers.installModalTemplates(append);
@@ -60,6 +70,7 @@ define(["jquery", "underscore", "js/spec_helpers/create_sinon", "js/spec_helpers
             'uninstallMockXBlock': uninstallMockXBlock,
             'installMockXModule': installMockXModule,
             'uninstallMockXModule': uninstallMockXModule,
+            'mockComponentTemplates': mockComponentTemplates,
             'installEditTemplates': installEditTemplates,
             'showEditModal': showEditModal
         });

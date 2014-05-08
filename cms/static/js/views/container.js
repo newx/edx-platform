@@ -18,7 +18,7 @@ define(["jquery", "underscore", "js/views/xblock", "js/utils/module", "gettext",
                     stop: function (event, ui) {
                         var saving, hideSaving, removeFromParent;
 
-                        if (oldParent === undefined) {
+                        if (_.isUndefined(oldParent)) {
                             // If no actual change occurred,
                             // oldParent will never have been set.
                             return;

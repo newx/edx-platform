@@ -93,14 +93,10 @@ define(["jquery", "underscore", "backbone", "gettext", "js/utils/handle_iframe_b
              * @param operation A function that returns a promise representing the operation.
              */
             runOperationShowingMessage: function(message, operation) {
-                var notificationView, promise, notificationMinShown;
+                var notificationView;
                 notificationView = new NotificationView.Mini({
                     title: gettext(message)
                 });
-                // Allow the minShown to be overridden by the view, primarily for testing
-                if (this.options.notificationMinShown !== undefined && notificationView.options) {
-                    notificationView.options.minShown = this.options.notificationMinShown;
-                }
                 notificationView.show();
                 return operation().always(function() {
                     notificationView.hide();

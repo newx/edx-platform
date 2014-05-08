@@ -20,8 +20,7 @@ define(["jquery", "js/spec_helpers/create_sinon", "js/spec_helpers/edit_helpers"
                 });
                 containerPage = new ContainerPage({
                     model: model,
-                    el: $('#content'),
-                    notificationMinShown: 0
+                    el: $('#content')
                 });
             });
 
