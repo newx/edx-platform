@@ -73,11 +73,11 @@ class Command(BaseCommand):
             total_audit = GeneratedCertificate.objects.filter(
                 course_id__exact=course_id, mode__exact='audit')
 
-            cert_data[course_id] = {'active': active_students.count(),
-                                    'enrolled': enrolled_students.count(),
-                                    'total_verified': total_verified.count(),
-                                    'total_honor': total_honor.count(),
-                                    'total_audit': total_audit.count()}
+            cert_data[course_id] = {'current_enrolled': active_students.count(),
+                                    'total_enrolled': enrolled_students.count(),
+                                    'verified_total': total_verified.count(),
+                                    'honor_total': total_honor.count(),
+                                    'audit_total': total_audit.count()}
 
             status_tally = GeneratedCertificate.objects.filter(
                 course_id__exact=course_id).values('status').annotate(
@@ -95,13 +95,13 @@ class Command(BaseCommand):
                     for mode in mode_tally})
 
         # all states we have seen far all courses
-        status_headings = set(
+        status_headings = sorted(set(
             [status for course in cert_data
-                for status in cert_data[course]])
+                for status in cert_data[course]]))
 
         # print the heading for the report
         print "{:>26}".format("course ID"),
-        print ' '.join(["{:>14}".format(heading)
+        print ' '.join(["{:>16}".format(heading)
                         for heading in status_headings])
 
         # print the report
@@ -109,7 +109,7 @@ class Command(BaseCommand):
             print "{0:>26}".format(course_id[0:24]),
             for heading in status_headings:
                 if heading in cert_data[course_id]:
-                    print "{:>14}".format(cert_data[course_id][heading]),
+                    print "{:>16}".format(cert_data[course_id][heading]),
                 else:
-                    print " " * 14,
+                    print " " * 16,
             print
