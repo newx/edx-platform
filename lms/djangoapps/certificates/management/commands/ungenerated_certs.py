@@ -84,7 +84,8 @@ class Command(BaseCommand):
 
             print "Fetching enrolled students for {0}".format(course_id)
             enrolled_students = User.objects.filter(
-                courseenrollment__course_id=course_id)
+                courseenrollment__course_id=course_id,
+                courseenrollment__is_active=True)
 
             xq = XQueueCertInterface()
             if options['insecure']:
