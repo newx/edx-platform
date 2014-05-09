@@ -522,6 +522,157 @@ class YouTubeVideoTest(VideoBaseTest):
         self.video.select_language('en')
         self.assertIn('Hi, welcome to Edx.', self.video.captions_text)
 
+    def test_video_end_time_with_default_start_time(self):
+        """
+        Scenario: End time works for Youtube video
+        Given we have a video in "Youtube" mode with end time set to 00:00:02
+        And I click video button "play"
+        And I wait until video stop playing
+        Then I see video slider at "0:02" position
+        """
+        data = {'end_time': '00:00:02'}
+        self.metadata = self.metadata_for_mode('youtube', additional_data=data)
+
+        # go to video
+        self.navigate_to_video()
+
+        self.video.click_player_button('play')
+
+        # wait until video stop playing
+        self.video.wait_for_event('pause')
+
+        self.assertEqual(self.video.position, '0:02')
+
+    def test_video_end_time_wo_default_start_time(self):
+        """
+        Scenario: Youtube video with end-time at 1:00 and the video starts playing at 0:55
+        Given we have a video in "Youtube" mode  with end time set to 00:01:00
+        And I seek video to "0:55" position
+        And I click video button "play"
+        And I wait until video stop playing
+        Then I see video slider at "1:00" position
+        """
+        data = {'end_time': '00:01:00'}
+        self.metadata = self.metadata_for_mode('youtube', additional_data=data)
+
+        # go to video
+        self.navigate_to_video()
+
+        self.video.seek('0:55')
+
+        self.video.click_player_button('play')
+
+        # wait until video stop playing
+        self.video.wait_for_event('pause')
+
+        self.assertEqual(self.video.position, '1:00')
+
+    def test_video_start_time_and_end_time(self):
+        """
+        Scenario: Start time and end time work together for Youtube video
+        Given we a video in "Youtube" mode with start time set to 00:00:10 and end_time set to 00:00:12
+        And I see video slider at "0:10" position
+        And I click video button "play"
+        Then I wait until video stop playing
+        Then I see video slider at "0:12" position
+
+        """
+        data = {'start_time': '00:00:10', 'end_time': '00:00:12'}
+        self.metadata = self.metadata_for_mode('youtube', additional_data=data)
+
+        # go to video
+        self.navigate_to_video()
+
+        self.assertEqual(self.video.position, '0:10')
+
+        self.video.click_player_button('play')
+
+        # wait until video stop playing
+        self.video.wait_for_event('pause')
+
+        self.assertEqual(self.video.position, '0:12')
+
+    def test_video_end_time_and_finish_time(self):
+        """
+        Scenario: Youtube video after pausing at end time, video plays to the end from end time
+        Given we have a video in "Youtube" mode with start time set to 00:01:51 and end_time set to 00:01:52
+        And I click video button "play"
+        And I wait until video stop playing
+        Then I see video slider at "1:52" position
+        And I click video button "play"
+        And I wait until video stop playing
+        Then I see video slider at "1:55" position
+        """
+        data = {'start_time': '00:01:51', 'end_time': '00:01:52'}
+        self.metadata = self.metadata_for_mode('youtube', additional_data=data)
+
+        # go to video
+        self.navigate_to_video()
+
+        self.video.click_player_button('play')
+
+        # wait until video stop playing
+        self.video.wait_for_event('pause')
+
+        self.assertEqual(self.video.position, '1:52')
+
+        self.video.click_player_button('play')
+
+        # wait until video stop playing
+        self.video.wait_for_event('finished')
+
+        self.assertEqual(self.video.position, '1:55')
+
+    def test_video_end_time(self):
+        """
+        Scenario: Youtube video with end-time at 0:32 and start-time at 0:30, the video starts playing from 0:28
+        Given it has a video in "Youtube" mode
+        And I seek video to "0:28" position
+        And I click video button "play"
+        And I wait until video stop playing
+        Then I see video slider at "0:32" position
+
+        """
+        data = {'start_time': '00:00:30', 'end_time': '00:00:32'}
+        self.metadata = self.metadata_for_mode('youtube', additional_data=data)
+
+        # go to video
+        self.navigate_to_video()
+
+        self.video.seek('0:28')
+
+        self.video.click_player_button('play')
+
+        # wait until video stop playing
+        self.video.wait_for_event('pause')
+
+        self.assertEqual(self.video.position, '0:32')
+
+    def test_video_finish_time(self):
+        """
+        Scenario: Youtube video with end-time at 1:00, the video starts playing from 1:52
+        Given it has a video in "Youtube" mode
+        And I seek video to "1:52" position
+        And I click video button "play"
+        And I wait until video stop playing
+        Then I see video slider at "1:55" position
+
+        """
+        data = {'end_time': '00:01:00'}
+        self.metadata = self.metadata_for_mode('youtube', additional_data=data)
+
+        # go to video
+        self.navigate_to_video()
+
+        self.video.seek('1:52')
+
+        self.video.click_player_button('play')
+
+        # wait until video stop playing
+        self.video.wait_for_event('pause')
+
+        self.assertEqual(self.video.position, '01:55')
+
 
 class YouTubeHtml5VideoTest(VideoBaseTest):
     """ Test YouTube HTML5 Video Player """
