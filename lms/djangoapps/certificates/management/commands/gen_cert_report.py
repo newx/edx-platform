@@ -61,23 +61,23 @@ class Command(BaseCommand):
             # find students who are active
             # enrolled students are always downloable + notpassing
             print "Looking up certificate states for {0}".format(course_id)
-            active_students = User.objects.filter(
+            enrolled_students = User.objects.filter(
                 courseenrollment__course_id=course_id,
                 courseenrollment__is_active=True)
-            enrolled_students = User.objects.filter(
+            total_students = User.objects.filter(
                 courseenrollment__course_id=course_id)
-            total_verified = GeneratedCertificate.objects.filter(
+            verified_total = GeneratedCertificate.objects.filter(
                 course_id__exact=course_id, mode__exact='verified')
-            total_honor = GeneratedCertificate.objects.filter(
+            honor_total = GeneratedCertificate.objects.filter(
                 course_id__exact=course_id, mode__exact='honor')
-            total_audit = GeneratedCertificate.objects.filter(
+            audit_total = GeneratedCertificate.objects.filter(
                 course_id__exact=course_id, mode__exact='audit')
 
-            cert_data[course_id] = {'current_enrolled': active_students.count(),
-                                    'total_enrolled': enrolled_students.count(),
-                                    'verified_total': total_verified.count(),
-                                    'honor_total': total_honor.count(),
-                                    'audit_total': total_audit.count()}
+            cert_data[course_id] = {'current_enrolled': enrolled_students.count(),
+                                    'total_enrolled': total_students.count()
+                                    'verified_total': verified_total.count(),
+                                    'honor_total': honor_total.count(),
+                                    'audit_total': audit_total.count()}
 
             status_tally = GeneratedCertificate.objects.filter(
                 course_id__exact=course_id).values('status').annotate(
